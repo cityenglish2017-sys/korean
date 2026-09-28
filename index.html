@@ -1,267 +1,175 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>아준 역무원</title>
+  <title>아준 역무원 - 한글 승차권 복구센터</title>
 
-<style>
-body{
-    margin:0;
-    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
-    background:#eaf6ff;
-    text-align:center;
-    color:#17324d;
-}
-
-header{
-    background:#1976d2;
-    color:white;
-    padding:25px;
-}
-
-h1{
-    font-size:42px;
-    margin:5px;
-}
-
-.subtitle{
-    font-size:20px;
-    font-weight:bold;
-}
-
-.station{
-    max-width:900px;
-    margin:25px auto;
-    background:white;
-    padding:25px;
-    border-radius:25px;
-}
-
-.train{
-    font-size:80px;
-}
-
-.ticket{
-    max-width:800px;
-    margin:20px auto;
-    background:#fffbea;
-    border:4px solid #17324d;
-    border-radius:25px;
-    padding:30px;
-}
-
-.word{
-    font-size:65px;
-    font-weight:900;
-    margin:25px;
-}
-
-button{
-    border:0;
-    border-radius:18px;
-    padding:18px 28px;
-    margin:8px;
-    font-size:22px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.blue{
-    background:#1976d2;
-    color:white;
-}
-
-.yellow{
-    background:#ffd43b;
-}
-
-.green{
-    background:#20b66f;
-    color:white;
-}
-
-#message{
-    font-size:25px;
-    font-weight:bold;
-    margin-top:20px;
-}
-</style>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-<header>
-    <div class="subtitle">
-        🚉 KOREAN WRITING TRAIN
-    </div>
+<div id="app">
 
-    <h1>
-        아준 역무원
-    </h1>
-
+  <header class="top-bar">
     <div>
-        사라진 글자 승차권
-    </div>
-</header>
-
-
-<div class="station">
-
-    <div class="train">
-        🚄🚃🚃🚃
+      <div class="mini-title">KOREAN WRITING TRAIN</div>
+      <h1>🚆 아준 역무원</h1>
     </div>
 
-    <h2>
-        창원중앙역
-    </h2>
-
-    <p style="font-size:20px;">
-        승차권의 사라진 글자를 찾아주세요!
-    </p>
-
-</div>
+    <div class="score-box">
+      ⭐ <span id="score">0</span>
+    </div>
+  </header>
 
 
-<div class="ticket">
+  <!-- 난이도 -->
+  <section class="level-panel">
 
-    <h2>
-        🎫 오늘의 승차권
-    </h2>
+    <div class="level-title">
+      오늘의 임무 난이도
+    </div>
 
-    <div id="word" class="word">
+    <div class="level-buttons">
+      <button data-level="1" class="level-btn active">
+        1<br><span>자음</span>
+      </button>
+
+      <button data-level="2" class="level-btn">
+        2<br><span>모음</span>
+      </button>
+
+      <button data-level="3" class="level-btn">
+        3<br><span>섞어서</span>
+      </button>
+
+      <button data-level="4" class="level-btn">
+        4<br><span>한 글자</span>
+      </button>
+
+      <button data-level="5" class="level-btn">
+        5<br><span>단어</span>
+      </button>
+    </div>
+
+    <div id="levelText" class="level-description">
+      LEVEL 1 · 자음 하나 쓰기
+    </div>
+
+  </section>
+
+
+  <!-- 역 -->
+  <section class="station">
+
+    <div class="station-sign">
+      🚉 창원중앙역
+    </div>
+
+    <div class="rail">
+      <div id="train" class="train">
+        🚄
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- 승차권 -->
+  <section class="ticket">
+
+    <div class="ticket-top">
+      <div>
+        <span class="ticket-label">KTX 승차권</span>
+        <strong>글자 복구 임무</strong>
+      </div>
+
+      <div id="wordEmoji" class="word-emoji">
+        🚆
+      </div>
+    </div>
+
+
+    <div class="route">
+
+      <div>
+        <small>출발</small>
+        <strong>창원중앙</strong>
+      </div>
+
+      <div class="route-arrow">
+        ➜
+      </div>
+
+      <div>
+        <small>목적지</small>
+        <strong id="destination">서울</strong>
+      </div>
+
+    </div>
+
+
+    <div class="mission-box">
+
+      <div id="missionText" class="mission">
+        승차권에서 글자가 지워졌어요!
+      </div>
+
+      <div id="wordDisplay" class="word-display">
         기 □
-    </div>
-
-    <div style="font-size:23px;">
-        빠진 글자를 직접 써보세요.
-    </div>
-
-
-    <div style="margin-top:25px;">
-
-        <button class="yellow"
-                onclick="hint()">
-            💡 힌트
-        </button>
-
-        <button class="green"
-                onclick="answer()">
-            ⭐ 정답 확인
-        </button>
-
-        <button class="blue"
-                onclick="nextQuestion()">
-            🚄 다음 승차권
-        </button>
+      </div>
 
     </div>
 
-    <div id="message"></div>
+  </section>
+
+
+  <!-- 쓰기 영역 -->
+  <section class="writing-section">
+
+    <div class="writing-title">
+      ✏️ 아준 역무원, 여기에 직접 써 주세요!
+    </div>
+
+    <div class="canvas-wrap">
+      <canvas id="writingCanvas"></canvas>
+
+      <div class="canvas-guide">
+        직접 써보기
+      </div>
+    </div>
+
+
+    <div class="action-buttons">
+
+      <button id="clearBtn" class="action secondary">
+        🧽 지우기
+      </button>
+
+      <button id="hintBtn" class="action hint">
+        💡 힌트
+      </button>
+
+      <button id="checkBtn" class="action primary">
+        ✅ 다 썼어요!
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <footer>
+    🚦 승차권을 고치면 기차가 출발해요!
+  </footer>
 
 </div>
 
 
-<script>
-
-const questions = [
-
-    {
-        display:"기 □",
-        answer:"차",
-        hint:"기차가 달려요! 🚆"
-    },
-
-    {
-        display:"□ 과",
-        answer:"사",
-        hint:"빨간 과일이에요! 🍎"
-    },
-
-    {
-        display:"우 □",
-        answer:"유",
-        hint:"우유를 마셔요! 🥛"
-    },
-
-    {
-        display:"학 □",
-        answer:"교",
-        hint:"친구들을 만나는 곳이에요! 🏫"
-    },
-
-    {
-        display:"자 동 □",
-        answer:"차",
-        hint:"도로를 달려요! 🚗"
-    },
-
-    {
-        display:"고 양 □",
-        answer:"이",
-        hint:"야옹! 🐱"
-    },
-
-    {
-        display:"강 아 □",
-        answer:"지",
-        hint:"멍멍! 🐶"
-    }
-
-];
-
-let current = 0;
-
-
-function showQuestion(){
-
-    document.getElementById("word").innerText =
-        questions[current].display;
-
-    document.getElementById("message").innerText =
-        "";
-
-}
-
-
-function hint(){
-
-    document.getElementById("message").innerText =
-        questions[current].hint;
-
-}
-
-
-function answer(){
-
-    const answer =
-        questions[current].answer;
-
-    document.getElementById("message").innerHTML =
-        "정답은 <span style='font-size:45px;color:#1976d2;'>"
-        + answer +
-        "</span> 입니다! 🎉";
-
-}
-
-
-function nextQuestion(){
-
-    current++;
-
-    if(current >= questions.length){
-        current = 0;
-    }
-
-    showQuestion();
-
-}
-
-showQuestion();
-
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
