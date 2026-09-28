@@ -1,0 +1,19 @@
+<!doctype html><html lang='ko'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no'><title>아준 역무원 - 지워진 승차권</title><link rel='stylesheet' href='style.css'></head><body>
+<div id='app'>
+<header><div><b>🚆 아준 역무원</b><span>지워진 승차권 복구센터</span></div><button id='settingsBtn'>⚙️ 난이도</button></header>
+<main>
+<section class='scene'><div class='sky'>☁️　☀️　☁️</div><div class='station'>🏢 <b>창원중앙역</b><div class='train' id='train'>🚄🚃🚃🚃</div></div></section>
+<section class='ticket'>
+<div class='ticketTop'><span>🎫 KORAIL 어린이 승차권</span><span id='qcount'>1 / 10</span></div>
+<div class='route'><div><small>출발</small><b id='from'>창원중앙</b></div><strong>➜</strong><div><small>도착</small><b id='to'>서울</b></div></div>
+<div class='mission' id='mission'>지워진 글자를 직접 써서 승차권을 고쳐 주세요!</div>
+<div id='wordDisplay' class='wordDisplay'></div>
+<div class='canvasWrap'><canvas id='pad'></canvas><div id='traceHint' class='traceHint'></div></div>
+<div class='actions'><button id='eraseBtn'>🧽 지우기</button><button id='hintBtn'>💡 힌트</button><button id='doneBtn' class='primary'>✋ 다 썼어요</button></div>
+</section>
+</main>
+<div id='verify' class='overlay hidden'><div class='modal'><h2>내가 쓴 글자와 비교해 볼까요?</h2><div class='compare'><div><small>내가 쓴 글자</small><canvas id='snapshot'></canvas></div><div><small>정답</small><div id='answerBig' class='answerBig'></div></div></div><p>같게 썼나요?</p><div class='actions'><button id='retryBtn'>↩ 다시 써볼래요</button><button id='correctBtn' class='primary'>⭕ 맞게 썼어요!</button></div></div></div>
+<div id='learn' class='overlay hidden'><div class='modal learn'><div class='star'>⭐</div><h2 id='learnTitle'></h2><div id='jamoBig' class='jamoBig'></div><p id='learnText'></p><button id='soundBtn'>🔊 다시 듣기</button><button id='nextBtn' class='primary'>다음 승차권 ➜</button></div></div>
+<div id='settings' class='overlay hidden'><div class='modal'><h2>난이도 선택</h2><div id='levels' class='levels'></div><label class='toggle'><input id='advancedJamo' type='checkbox'> 된소리·겹모음도 섞기</label><label class='toggle'><input id='traceMode' type='checkbox'> 흐린 글자 따라쓰기 힌트 허용</label><button id='closeSettings' class='primary'>이 난이도로 시작</button></div></div>
+<footer>정답을 고르는 게임이 아니라 <b>직접 떠올려 쓰는 게임</b>이에요. 글씨 모양보다 “기억해서 써냈는지”를 먼저 칭찬해 주세요.</footer>
+</div><script src='script.js'></script></body></html>
