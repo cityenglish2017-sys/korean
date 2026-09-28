@@ -1,11 +1,14 @@
 /* ==========================================================
-   아준 역무원
-   사라진 글자 승차권 - DAMAGE EDITION
+   아준 역무원 - 사라진 글자 승차권
+   ? 자모 복구 버전
    ========================================================== */
 
 
-const WORDS = [
+/* ==========================================================
+   단어 데이터
+   ========================================================== */
 
+const WORDS = [
   ["기차", "🚆"],
   ["기차역", "🚉"],
   ["열차", "🚆"],
@@ -46,13 +49,12 @@ const WORDS = [
   ["이서", "👧"],
   ["할머니", "👵"],
   ["할아버지", "👴"]
-
 ];
 
 
 /* ==========================================================
    한글 자모
-========================================================== */
+   ========================================================== */
 
 const INITIALS = [
   "ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ",
@@ -64,8 +66,7 @@ const INITIALS = [
 const VOWELS = [
   "ㅏ","ㅐ","ㅑ","ㅒ","ㅓ","ㅔ","ㅕ",
   "ㅖ","ㅗ","ㅘ","ㅙ","ㅚ","ㅛ",
-  "ㅜ","ㅝ","ㅞ","ㅟ","ㅠ",
-  "ㅡ","ㅢ","ㅣ"
+  "ㅜ","ㅝ","ㅞ","ㅟ","ㅠ","ㅡ","ㅢ","ㅣ"
 ];
 
 
@@ -78,129 +79,74 @@ const FINALS = [
 ];
 
 
-const CONSONANT_NAMES = {
+/* ==========================================================
+   자음 이름
+   ========================================================== */
 
+const CONSONANT_NAMES = {
   "ㄱ":"기역",
   "ㄲ":"쌍기역",
-
   "ㄴ":"니은",
-
   "ㄷ":"디귿",
   "ㄸ":"쌍디귿",
-
   "ㄹ":"리을",
-
   "ㅁ":"미음",
-
   "ㅂ":"비읍",
   "ㅃ":"쌍비읍",
-
   "ㅅ":"시옷",
   "ㅆ":"쌍시옷",
-
   "ㅇ":"이응",
-
   "ㅈ":"지읒",
   "ㅉ":"쌍지읒",
-
   "ㅊ":"치읓",
-
   "ㅋ":"키읔",
-
   "ㅌ":"티읕",
-
   "ㅍ":"피읖",
-
   "ㅎ":"히읗"
 };
 
 
-const VOWEL_SOUNDS = {
+/* ==========================================================
+   모음 소리
+   ========================================================== */
 
+const VOWEL_SOUNDS = {
   "ㅏ":"아",
   "ㅐ":"애",
-
   "ㅑ":"야",
   "ㅒ":"얘",
-
   "ㅓ":"어",
   "ㅔ":"에",
-
   "ㅕ":"여",
   "ㅖ":"예",
-
   "ㅗ":"오",
-
   "ㅘ":"와",
   "ㅙ":"왜",
   "ㅚ":"외",
-
   "ㅛ":"요",
-
   "ㅜ":"우",
-
   "ㅝ":"워",
   "ㅞ":"웨",
   "ㅟ":"위",
-
   "ㅠ":"유",
-
   "ㅡ":"으",
   "ㅢ":"의",
-
   "ㅣ":"이"
 };
 
 
 /* ==========================================================
-   훼손 종류
-========================================================== */
-
-const DAMAGES = [
-
-  {
-    className: "damage-sticker",
-    name: "수리 스티커",
-    message: "승차권에 수리 스티커가 붙었어요!"
-  },
-
-  {
-    className: "damage-ink",
-    name: "잉크 얼룩",
-    message: "승차권에 잉크가 번졌어요!"
-  },
-
-  {
-    className: "damage-stamp",
-    name: "도장",
-    message: "역무원 도장이 글자를 가렸어요!"
-  },
-
-  {
-    className: "damage-tear",
-    name: "찢어진 부분",
-    message: "승차권 일부가 찢어졌어요!"
-  }
-
-];
-
-
-/* ==========================================================
    상태
-========================================================== */
+   ========================================================== */
 
 let level = 1;
-
 let score = 0;
 
 let current = null;
 
 let previousWord = "";
 
-let previousDamage = "";
-
 let drawing = false;
-
 let hasDrawn = false;
 
 let lastX = 0;
@@ -209,14 +155,13 @@ let lastY = 0;
 
 /* ==========================================================
    DOM
-========================================================== */
+   ========================================================== */
 
 const canvas =
   document.getElementById("writingCanvas");
 
 const ctx =
   canvas.getContext("2d");
-
 
 const wordDisplay =
   document.getElementById("wordDisplay");
@@ -239,31 +184,10 @@ const scoreElement =
 const train =
   document.getElementById("train");
 
-const ticket =
-  document.querySelector(".ticket");
-
-
-/* ==========================================================
-   복구 완료 도장 생성
-========================================================== */
-
-const repairStamp =
-  document.createElement("div");
-
-repairStamp.className =
-  "repair-stamp";
-
-repairStamp.textContent =
-  "복구 완료 ✓";
-
-ticket.appendChild(
-  repairStamp
-);
-
 
 /* ==========================================================
    한글 분해
-========================================================== */
+   ========================================================== */
 
 function decompose(char) {
 
@@ -275,9 +199,7 @@ function decompose(char) {
     code < 0xAC00 ||
     code > 0xD7A3
   ) {
-
     return null;
-
   }
 
 
@@ -286,9 +208,7 @@ function decompose(char) {
 
 
   const initialIndex =
-    Math.floor(
-      index / 588
-    );
+    Math.floor(index / 588);
 
 
   const vowelIndex =
@@ -302,7 +222,6 @@ function decompose(char) {
 
 
   return {
-
     initial:
       INITIALS[initialIndex],
 
@@ -311,14 +230,13 @@ function decompose(char) {
 
     final:
       FINALS[finalIndex]
-
   };
 }
 
 
 /* ==========================================================
    랜덤
-========================================================== */
+   ========================================================== */
 
 function random(array) {
 
@@ -328,13 +246,12 @@ function random(array) {
       array.length
     )
   ];
-
 }
 
 
 /* ==========================================================
    단어 선택
-========================================================== */
+   ========================================================== */
 
 function getRandomWord() {
 
@@ -346,9 +263,7 @@ function getRandomWord() {
     choice =
       random(WORDS);
 
-  }
-
-  while (
+  } while (
     choice[0] === previousWord &&
     WORDS.length > 1
   );
@@ -363,39 +278,8 @@ function getRandomWord() {
 
 
 /* ==========================================================
-   훼손 선택
-========================================================== */
-
-function getRandomDamage() {
-
-  let damage;
-
-
-  do {
-
-    damage =
-      random(DAMAGES);
-
-  }
-
-  while (
-    damage.className ===
-      previousDamage &&
-    DAMAGES.length > 1
-  );
-
-
-  previousDamage =
-    damage.className;
-
-
-  return damage;
-}
-
-
-/* ==========================================================
    문제 만들기
-========================================================== */
+   ========================================================== */
 
 function makeQuestion() {
 
@@ -406,7 +290,6 @@ function makeQuestion() {
   const word =
     selected[0];
 
-
   const emoji =
     selected[1];
 
@@ -415,7 +298,7 @@ function makeQuestion() {
     [...word];
 
 
-  let index =
+  const index =
     Math.floor(
       Math.random() *
       letters.length
@@ -442,7 +325,9 @@ function makeQuestion() {
   let answer;
 
 
-  /* LEVEL 1 */
+  /* LEVEL 1
+     초성
+  */
 
   if (level === 1) {
 
@@ -455,7 +340,9 @@ function makeQuestion() {
   }
 
 
-  /* LEVEL 2 */
+  /* LEVEL 2
+     모음
+  */
 
   else if (level === 2) {
 
@@ -468,12 +355,14 @@ function makeQuestion() {
   }
 
 
-  /* LEVEL 3 */
+  /* LEVEL 3
+     자음/모음 랜덤
+  */
 
   else if (level === 3) {
 
     if (
-      Math.random() < .5
+      Math.random() < 0.5
     ) {
 
       type =
@@ -497,7 +386,9 @@ function makeQuestion() {
   }
 
 
-  /* LEVEL 4 */
+  /* LEVEL 4
+     한 음절
+  */
 
   else if (level === 4) {
 
@@ -510,7 +401,9 @@ function makeQuestion() {
   }
 
 
-  /* LEVEL 5 */
+  /* LEVEL 5
+     전체 단어
+  */
 
   else {
 
@@ -535,143 +428,181 @@ function makeQuestion() {
     parts,
 
     type,
-    answer,
-
-    damage:
-      getRandomDamage()
+    answer
 
   };
-
-
-  repairStamp.classList.remove(
-    "show"
-  );
 
 
   renderQuestion();
 
   clearCanvas();
-
 }
 
 
 /* ==========================================================
-   승차권 단어 만들기
-========================================================== */
+   ? 표시 스타일
+   JS에서 직접 스타일을 넣기 때문에
+   CSS 파일을 수정하지 않아도 됨
+   ========================================================== */
 
-function createDamagedWord() {
+function questionMark() {
 
-  let html =
-    `<div class="ticket-word">`;
+  return `
+
+    <span style="
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+
+      min-width:52px;
+      height:52px;
+
+      margin:0 5px;
+
+      padding:0 10px;
+
+      border-radius:13px;
+
+      background:#fff0a8;
+
+      border:3px dashed #e0a800;
+
+      color:#d64242;
+
+      font-size:42px;
+      font-weight:900;
+
+      line-height:1;
+
+      vertical-align:middle;
+
+      box-shadow:
+        0 3px 8px rgba(0,0,0,.08);
+    ">
+
+      ?
+
+    </span>
+
+  `;
+}
 
 
-  /* LEVEL 5
-     단어 전체가 훼손됨
+/* ==========================================================
+   한 음절의 분해 표시
+   ========================================================== */
+
+function makeJamoDisplay() {
+
+  const p =
+    current.parts;
+
+
+  /* LEVEL 1
+     초성 ?
+
+     원 →
+     ? + ㅝ + ㄴ
   */
 
   if (
-    current.type === "word"
+    current.type ===
+    "consonant"
   ) {
 
-    current.letters.forEach(
-      function(letter) {
+    return `
 
-        html += `
+      <span style="
+        display:inline-flex;
+        align-items:center;
+        gap:7px;
+      ">
 
-          <span
-            class="
-              ticket-letter
-              damaged-letter
-              ${current.damage.className}
-            "
-          >
+        ${questionMark()}
 
-            <span
-              class="hidden-original">
+        <span>+</span>
 
-              ${letter}
+        <span>
+          ${p.vowel}
+        </span>
 
+        ${
+          p.final
+          ?
+          `
+            <span>+</span>
+
+            <span>
+              ${p.final}
             </span>
+          `
+          :
+          ""
+        }
 
-          </span>
+      </span>
 
-        `;
-
-      }
-    );
+    `;
 
   }
 
 
-  /* LEVEL 1~4
-     한 음절만 훼손됨
+  /* LEVEL 2
+     모음 ?
+
+     원 →
+     ㅇ + ? + ㄴ
   */
 
-  else {
+  if (
+    current.type ===
+    "vowel"
+  ) {
 
-    current.letters.forEach(
-      function(letter, i) {
+    return `
 
-        if (
-          i === current.index
-        ) {
+      <span style="
+        display:inline-flex;
+        align-items:center;
+        gap:7px;
+      ">
 
-          html += `
+        <span>
+          ${p.initial}
+        </span>
 
-            <span
-              id="damagedTarget"
-              class="
-                ticket-letter
-                damaged-letter
-                ${current.damage.className}
-              "
-            >
+        <span>+</span>
 
-              <span
-                class="hidden-original">
+        ${questionMark()}
 
-                ${letter}
+        ${
+          p.final
+          ?
+          `
+            <span>+</span>
 
-              </span>
-
+            <span>
+              ${p.final}
             </span>
-
-          `;
-
+          `
+          :
+          ""
         }
 
-        else {
+      </span>
 
-          html += `
-
-            <span
-              class="ticket-letter">
-
-              ${letter}
-
-            </span>
-
-          `;
-
-        }
-
-      }
-    );
+    `;
 
   }
 
 
-  html +=
-    `</div>`;
-
-
-  return html;
+  return "";
 }
 
 
 /* ==========================================================
-   문제 화면
-========================================================== */
+   문제 표시
+   ========================================================== */
 
 function renderQuestion() {
 
@@ -686,82 +617,241 @@ function renderQuestion() {
       "대전",
       "동대구",
       "수서",
-      "진주"
+      "진주",
+      "창원"
     ]);
 
 
-  let instruction;
+  let html = "";
 
+
+  /* ======================================================
+     LEVEL 1 / 2 / 3
+     자모 하나가 ?
+     ====================================================== */
 
   if (
-    current.type ===
-    "consonant"
+    current.type === "consonant" ||
+    current.type === "vowel"
   ) {
 
-    instruction =
-      `${current.damage.message} ` +
-      `가려진 글자의 첫소리를 써서 복구하세요.`;
+    current.letters.forEach(
+      function(letter, i) {
+
+        if (
+          i === current.index
+        ) {
+
+          html += `
+
+            <span style="
+              display:inline-flex;
+              align-items:center;
+
+              padding:5px 10px;
+
+              margin:0 4px;
+
+              background:#f4f8fb;
+
+              border:2px solid #cad7df;
+
+              border-radius:14px;
+
+              letter-spacing:0;
+            ">
+
+              ${makeJamoDisplay()}
+
+            </span>
+
+          `;
+
+        }
+
+        else {
+
+          html += `
+
+            <span style="
+              display:inline-block;
+              margin:0 5px;
+            ">
+
+              ${letter}
+
+            </span>
+
+          `;
+
+        }
+
+      }
+    );
+
+
+    if (
+      current.type === "consonant"
+    ) {
+
+      missionText.innerHTML = `
+
+        승차권에서
+        <strong style="color:#d64242;">
+          첫소리 하나
+        </strong>
+        가 사라졌어요!
+
+        <br>
+
+        <span style="
+          font-size:14px;
+          color:#607486;
+        ">
+          ?에 들어갈 자음을 직접 써 주세요.
+        </span>
+
+      `;
+
+    }
+
+    else {
+
+      missionText.innerHTML = `
+
+        승차권에서
+        <strong style="color:#d64242;">
+          가운데소리 하나
+        </strong>
+        가 사라졌어요!
+
+        <br>
+
+        <span style="
+          font-size:14px;
+          color:#607486;
+        ">
+          ?에 들어갈 모음을 직접 써 주세요.
+        </span>
+
+      `;
+
+    }
 
   }
 
+
+  /* ======================================================
+     LEVEL 4
+     한 글자가 ?
+     ====================================================== */
 
   else if (
-    current.type ===
-    "vowel"
+    current.type === "syllable"
   ) {
 
-    instruction =
-      `${current.damage.message} ` +
-      `가려진 글자의 가운데소리를 써서 복구하세요.`;
+    current.letters.forEach(
+      function(letter, i) {
+
+        if (
+          i === current.index
+        ) {
+
+          html +=
+            questionMark();
+
+        }
+
+        else {
+
+          html += `
+
+            <span style="
+              display:inline-block;
+              margin:0 5px;
+            ">
+
+              ${letter}
+
+            </span>
+
+          `;
+
+        }
+
+      }
+    );
+
+
+    missionText.innerHTML = `
+
+      승차권에서
+      <strong style="color:#d64242;">
+        한 글자
+      </strong>
+      가 사라졌어요!
+
+      <br>
+
+      <span style="
+        font-size:14px;
+        color:#607486;
+      ">
+        ?에 들어갈 글자를 직접 써 주세요.
+      </span>
+
+    `;
 
   }
 
 
-  else if (
-    current.type ===
-    "syllable"
-  ) {
-
-    instruction =
-      `${current.damage.message} ` +
-      `가려진 글자 하나를 써서 복구하세요.`;
-
-  }
-
+  /* ======================================================
+     LEVEL 5
+     단어 전체
+     ====================================================== */
 
   else {
 
-    instruction =
-      `승차권의 단어가 모두 훼손됐어요! ` +
-      `단어 전체를 기억해서 써 주세요.`;
+    current.letters.forEach(
+      function() {
+
+        html +=
+          questionMark();
+
+      }
+    );
+
+
+    missionText.innerHTML = `
+
+      승차권의
+      <strong style="color:#d64242;">
+        단어 전체
+      </strong>
+      가 사라졌어요!
+
+      <br>
+
+      <span style="
+        font-size:14px;
+        color:#607486;
+      ">
+        목적지 단어 전체를 기억해서 써 주세요.
+      </span>
+
+    `;
 
   }
 
 
-  missionText.innerHTML = `
-
-    <div class="damage-warning">
-
-      ⚠️ 승차권 훼손 발견
-
-    </div>
-
-    <br>
-
-    ${instruction}
-
-  `;
-
-
   wordDisplay.innerHTML =
-    createDamagedWord();
-
+    html;
 }
 
 
 /* ==========================================================
-   Canvas 크기
-========================================================== */
+   Canvas
+   ========================================================== */
 
 function resizeCanvas() {
 
@@ -791,13 +881,17 @@ function resizeCanvas() {
   );
 
 
-  ctx.lineWidth = 9;
+  ctx.lineWidth =
+    9;
+
 
   ctx.lineCap =
     "round";
 
+
   ctx.lineJoin =
     "round";
+
 
   ctx.strokeStyle =
     "#172b3a";
@@ -814,16 +908,18 @@ window.addEventListener(
 
 
 /* ==========================================================
-   쓰기
-========================================================== */
+   손글씨 쓰기
+   ========================================================== */
 
 canvas.addEventListener(
   "pointerdown",
   function(e) {
 
-    drawing = true;
+    drawing =
+      true;
 
-    hasDrawn = true;
+    hasDrawn =
+      true;
 
 
     canvas.setPointerCapture(
@@ -845,11 +941,8 @@ canvas.addEventListener(
       rect.top;
 
 
-    /*
-      점 하나 찍어도 보이도록
-    */
-
     ctx.beginPath();
+
 
     ctx.arc(
       lastX,
@@ -859,8 +952,10 @@ canvas.addEventListener(
       Math.PI * 2
     );
 
+
     ctx.fillStyle =
       "#172b3a";
+
 
     ctx.fill();
   }
@@ -891,6 +986,7 @@ canvas.addEventListener(
 
     ctx.beginPath();
 
+
     ctx.moveTo(
       lastX,
       lastY
@@ -916,7 +1012,8 @@ canvas.addEventListener(
   "pointerup",
   function() {
 
-    drawing = false;
+    drawing =
+      false;
 
   }
 );
@@ -926,7 +1023,8 @@ canvas.addEventListener(
   "pointercancel",
   function() {
 
-    drawing = false;
+    drawing =
+      false;
 
   }
 );
@@ -934,7 +1032,7 @@ canvas.addEventListener(
 
 /* ==========================================================
    지우기
-========================================================== */
+   ========================================================== */
 
 function clearCanvas() {
 
@@ -950,13 +1048,14 @@ function clearCanvas() {
   );
 
 
-  hasDrawn = false;
+  hasDrawn =
+    false;
 }
 
 
 /* ==========================================================
    음성
-========================================================== */
+   ========================================================== */
 
 function speak(text) {
 
@@ -966,42 +1065,40 @@ function speak(text) {
       in window
     )
   ) {
-
     return;
-
   }
 
 
   speechSynthesis.cancel();
 
 
-  const utterance =
+  const voice =
     new SpeechSynthesisUtterance(
       text
     );
 
 
-  utterance.lang =
+  voice.lang =
     "ko-KR";
 
 
-  utterance.rate =
-    .78;
+  voice.rate =
+    0.78;
 
 
-  utterance.pitch =
+  voice.pitch =
     1.05;
 
 
   speechSynthesis.speak(
-    utterance
+    voice
   );
 }
 
 
 /* ==========================================================
    힌트
-========================================================== */
+   ========================================================== */
 
 function hint() {
 
@@ -1014,9 +1111,8 @@ function hint() {
   ) {
 
     message =
-      `'${current.word}'을 읽어 보세요. ` +
-      `가려진 '${current.syllable}'의 ` +
-      `첫소리를 생각해 보세요.`;
+      `'${current.word}'을 천천히 읽어 보세요. ` +
+      `'${current.syllable}'의 첫소리에 어떤 자음이 들어갈까요?`;
 
   }
 
@@ -1028,8 +1124,7 @@ function hint() {
 
     message =
       `'${current.word}'을 천천히 읽어 보세요. ` +
-      `가려진 '${current.syllable}'의 ` +
-      `가운데소리를 생각해 보세요.`;
+      `'${current.syllable}'의 가운데소리에 어떤 모음이 들어갈까요?`;
 
   }
 
@@ -1041,7 +1136,7 @@ function hint() {
 
     message =
       `'${current.word}'을 천천히 읽어 보세요. ` +
-      `어떤 글자가 가려졌을까요?`;
+      `물음표 자리에 어떤 글자가 들어갈까요?`;
 
   }
 
@@ -1050,8 +1145,7 @@ function hint() {
 
     message =
       `'${current.word}'. ` +
-      `한 글자씩 천천히 말하면서 ` +
-      `단어 전체를 써 보세요.`;
+      `한 글자씩 천천히 말하면서 단어 전체를 써 보세요.`;
 
   }
 
@@ -1068,19 +1162,22 @@ function hint() {
 
 
 /* ==========================================================
-   토스트
-========================================================== */
+   안내 메시지
+   ========================================================== */
 
 function showToast(message) {
 
-  const old =
+  const oldToast =
     document.querySelector(
       ".hint-toast"
     );
 
 
-  if (old)
-    old.remove();
+  if (oldToast) {
+
+    oldToast.remove();
+
+  }
 
 
   const toast =
@@ -1114,14 +1211,10 @@ function showToast(message) {
 
 
 /* ==========================================================
-   확인
-========================================================== */
+   정답 확인
+   ========================================================== */
 
 function checkAnswer() {
-
-  /*
-    아무것도 안 썼을 때
-  */
 
   if (!hasDrawn) {
 
@@ -1129,12 +1222,13 @@ function checkAnswer() {
       "먼저 쓰기판에 글자를 써 주세요! ✏️"
     );
 
+
     speak(
       "먼저 글자를 써 주세요."
     );
 
-    return;
 
+    return;
   }
 
 
@@ -1159,6 +1253,18 @@ function checkAnswer() {
       </div>
 
 
+      <div style="
+        font-size:18px;
+        font-weight:800;
+        margin-top:12px;
+        color:#607486;
+      ">
+
+        ?에 들어갈 정답은
+
+      </div>
+
+
       <div class="correct-answer">
 
         ${current.answer}
@@ -1169,7 +1275,6 @@ function checkAnswer() {
       <div class="popup-word">
 
         ${current.emoji}
-
         ${current.word}
 
       </div>
@@ -1177,8 +1282,7 @@ function checkAnswer() {
 
       <div class="popup-question">
 
-        아준이가 쓴 것과
-        정답이 같나요?
+        아준이가 쓴 것과 같나요?
 
       </div>
 
@@ -1227,6 +1331,7 @@ function checkAnswer() {
 
       clearCanvas();
 
+
       speak(
         "좋아요. 천천히 다시 써 봐요."
       );
@@ -1244,49 +1349,105 @@ function checkAnswer() {
       overlay.remove();
 
 
-      score += 10;
+      score +=
+        10;
 
 
       scoreElement.textContent =
         score;
 
 
-      revealTicket();
+      showRestoredWord();
 
     };
 }
 
 
 /* ==========================================================
-   승차권 복구 연출
-========================================================== */
+   ? → 정답으로 복구
+   ========================================================== */
 
-function revealTicket() {
+function showRestoredWord() {
 
-  const targets =
-    document.querySelectorAll(
-      ".damaged-letter"
-    );
+  wordDisplay.innerHTML = `
+
+    <span style="
+      display:inline-block;
+
+      padding:8px 22px;
+
+      background:#e9fff2;
+
+      border:3px solid #21b66f;
+
+      border-radius:18px;
+
+      font-size:48px;
+      font-weight:900;
+
+      color:#183047;
+
+      animation:restorePop .45s ease;
+    ">
+
+      ${current.word}
+
+    </span>
+
+  `;
 
 
-  targets.forEach(
-    function(target) {
+  /*
+    애니메이션을 JS에서 추가
+  */
 
-      target.classList.add(
-        "damage-reveal"
+  if (
+    !document.getElementById(
+      "restoreAnimation"
+    )
+  ) {
+
+    const style =
+      document.createElement(
+        "style"
       );
 
-    }
-  );
+
+    style.id =
+      "restoreAnimation";
 
 
-  repairStamp.classList.add(
-    "show"
-  );
+    style.textContent = `
+
+      @keyframes restorePop {
+
+        0% {
+          transform:scale(.65);
+          opacity:.3;
+        }
+
+        70% {
+          transform:scale(1.12);
+        }
+
+        100% {
+          transform:scale(1);
+          opacity:1;
+        }
+
+      }
+
+    `;
+
+
+    document.head.appendChild(
+      style
+    );
+  }
 
 
   speak(
-    "승차권 복구 성공!"
+    `${current.word}. 승차권 복구 성공!`
   );
 
 
@@ -1296,25 +1457,27 @@ function revealTicket() {
       learningPopup();
 
     },
-    900
+    700
   );
 }
 
 
 /* ==========================================================
    학습 팝업
-========================================================== */
+   ========================================================== */
 
 function learningPopup() {
 
-  let content = "";
+  let content =
+    "";
 
-  let speech = "";
+  let speech =
+    "";
 
 
-  /* ======================
+  /* ======================================================
      자음
-  ====================== */
+     ====================================================== */
 
   if (
     current.type ===
@@ -1338,11 +1501,21 @@ function learningPopup() {
 
       <div class="jamo-card">
 
+        물음표에 들어갈 글자는
+
         <strong>
           ${current.answer}
         </strong>
 
-        은 자음이에요.
+        이에요.
+
+        <br><br>
+
+        <strong>
+          ${current.answer}
+        </strong>
+
+        은 자음이고,
 
         <br>
 
@@ -1359,32 +1532,25 @@ function learningPopup() {
 
       <div class="jamo-card">
 
-        승차권에서 가려졌던 글자는
-
-        <strong>
-          ${current.syllable}
-        </strong>
-
-        였어요.
-
-        <br>
-
         ${current.parts.initial}
+
         +
+
         ${current.parts.vowel}
 
         ${
           current.parts.final
           ?
-          "+ " +
-          current.parts.final
+          ` + ${current.parts.final}`
           :
           ""
         }
 
         →
 
-        <strong>
+        <strong style="
+          font-size:30px;
+        ">
           ${current.syllable}
         </strong>
 
@@ -1395,17 +1561,16 @@ function learningPopup() {
 
     speech =
       `딩동댕! ` +
-      `${current.answer}을 잘 찾았어요. ` +
-      `${current.answer}의 이름은 ${name}이에요. ` +
-      `가려졌던 글자는 ${current.syllable}. ` +
+      `물음표에 들어갈 글자는 ${current.answer}. ` +
+      `${current.answer}은 자음이고 이름은 ${name}이에요. ` +
+      `${current.syllable}. ` +
       `${current.word} 승차권 복구 성공!`;
-
   }
 
 
-  /* ======================
+  /* ======================================================
      모음
-  ====================== */
+     ====================================================== */
 
   else if (
     current.type ===
@@ -1429,11 +1594,21 @@ function learningPopup() {
 
       <div class="jamo-card">
 
+        물음표에 들어갈 글자는
+
         <strong>
           ${current.answer}
         </strong>
 
-        는 모음이에요.
+        예요.
+
+        <br><br>
+
+        <strong>
+          ${current.answer}
+        </strong>
+
+        는 모음이고
 
         <br>
 
@@ -1450,32 +1625,25 @@ function learningPopup() {
 
       <div class="jamo-card">
 
-        승차권에서 가려졌던 글자는
-
-        <strong>
-          ${current.syllable}
-        </strong>
-
-        였어요.
-
-        <br>
-
         ${current.parts.initial}
+
         +
+
         ${current.parts.vowel}
 
         ${
           current.parts.final
           ?
-          "+ " +
-          current.parts.final
+          ` + ${current.parts.final}`
           :
           ""
         }
 
         →
 
-        <strong>
+        <strong style="
+          font-size:30px;
+        ">
           ${current.syllable}
         </strong>
 
@@ -1486,18 +1654,16 @@ function learningPopup() {
 
     speech =
       `딩동댕! ` +
-      `${current.answer}를 잘 찾았어요. ` +
-      `${current.answer}는 모음이고 ` +
-      `${sound} 소리가 나요. ` +
-      `가려졌던 글자는 ${current.syllable}. ` +
-      `승차권 복구 성공!`;
-
+      `물음표에 들어갈 글자는 ${current.answer}. ` +
+      `${current.answer}는 모음이고 ${sound} 소리가 나요. ` +
+      `${current.syllable}. ` +
+      `${current.word} 승차권 복구 성공!`;
   }
 
 
-  /* ======================
+  /* ======================================================
      한 글자
-  ====================== */
+     ====================================================== */
 
   else if (
     current.type ===
@@ -1515,7 +1681,7 @@ function learningPopup() {
 
       <div class="jamo-card">
 
-        가려졌던 글자는
+        물음표에 들어갈 글자는
 
         <strong>
           ${current.syllable}
@@ -1529,21 +1695,24 @@ function learningPopup() {
       <div class="jamo-card">
 
         ${current.parts.initial}
+
         +
+
         ${current.parts.vowel}
 
         ${
           current.parts.final
           ?
-          "+ " +
-          current.parts.final
+          ` + ${current.parts.final}`
           :
           ""
         }
 
         →
 
-        <strong>
+        <strong style="
+          font-size:30px;
+        ">
           ${current.syllable}
         </strong>
 
@@ -1553,16 +1722,15 @@ function learningPopup() {
 
 
     speech =
-      `잘했어요 아준 역무원! ` +
-      `가려졌던 글자는 ${current.syllable}. ` +
+      `잘했어요 아준 역무원. ` +
+      `물음표에 들어갈 글자는 ${current.syllable}. ` +
       `${current.word} 승차권 복구 성공!`;
-
   }
 
 
-  /* ======================
-     단어
-  ====================== */
+  /* ======================================================
+     단어 전체
+     ====================================================== */
 
   else {
 
@@ -1580,16 +1748,22 @@ function learningPopup() {
 
       <div class="jamo-card">
 
-        승차권의 단어를
-        모두 복구했어요!
+        사라진 단어는
 
-        <br><br>
+        <br>
 
         ${current.emoji}
 
-        <strong>
+        <strong style="
+          font-size:30px;
+        ">
           ${current.word}
         </strong>
+
+        <br><br>
+
+        단어 전체를
+        기억해서 완성했어요!
 
       </div>
 
@@ -1597,10 +1771,10 @@ function learningPopup() {
 
 
     speech =
-      `대단해요 아준 역무원! ` +
-      `${current.word} 단어 전체를 복구했어요. ` +
+      `대단해요 아준 역무원. ` +
+      `사라진 단어는 ${current.word}. ` +
+      `단어 전체를 복구했어요. ` +
       `기차가 출발합니다!`;
-
   }
 
 
@@ -1646,7 +1820,7 @@ function learningPopup() {
         class="big-popup-button"
       >
 
-        🚄 승차권 확인 · 출발!
+        🚄 기차 출발!
 
       </button>
 
@@ -1698,7 +1872,7 @@ function learningPopup() {
 
 /* ==========================================================
    기차 출발
-========================================================== */
+   ========================================================== */
 
 function departTrain() {
 
@@ -1724,28 +1898,32 @@ function departTrain() {
 
 
 /* ==========================================================
-   난이도
-========================================================== */
+   난이도 이름
+   ========================================================== */
 
 const levelNames = {
 
   1:
-    "LEVEL 1 · 가려진 글자의 첫소리 찾기",
+    "LEVEL 1 · ?에 들어갈 자음 찾기",
 
   2:
-    "LEVEL 2 · 가려진 글자의 가운데소리 찾기",
+    "LEVEL 2 · ?에 들어갈 모음 찾기",
 
   3:
-    "LEVEL 3 · 자음·모음 섞어서 복구",
+    "LEVEL 3 · 자음·모음 랜덤",
 
   4:
-    "LEVEL 4 · 가려진 한 글자 복구",
+    "LEVEL 4 · ?에 들어갈 한 글자 쓰기",
 
   5:
-    "LEVEL 5 · 훼손된 단어 전체 복구"
+    "LEVEL 5 · 사라진 단어 전체 쓰기"
 
 };
 
+
+/* ==========================================================
+   난이도 버튼
+   ========================================================== */
 
 document
   .querySelectorAll(
@@ -1797,8 +1975,8 @@ document
 
 
 /* ==========================================================
-   버튼
-========================================================== */
+   버튼 연결
+   ========================================================== */
 
 document
   .getElementById(
@@ -1825,8 +2003,8 @@ document
 
 
 /* ==========================================================
-   시작
-========================================================== */
+   게임 시작
+   ========================================================== */
 
 levelText.textContent =
   levelNames[level];
@@ -1839,7 +2017,7 @@ setTimeout(
   function() {
 
     speak(
-      "아준 역무원 출근! 승차권이 훼손됐어요. 가려진 글자를 찾아서 복구해 주세요."
+      "아준 역무원 출근! 승차권에서 글자가 사라졌어요. 물음표에 들어갈 글자를 직접 써 주세요."
     );
 
   },
